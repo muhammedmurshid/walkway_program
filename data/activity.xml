@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="mail_walkway_coordinator_alert" model="mail.activity.type">
+        <field name="name">Coordinator Activity</field>
+        <field name="res_model_id" ref="walkway_program.model_walkway_program"/>
+        <field name="delay_count">30</field>
+    </record>
+
+    <record id="walkway_activity_cron_job" model="ir.cron">
+        <field name="name">Base: Walkway Activity One day before</field>
+        <field name="model_id" ref="model_walkway_program"/>
+        <field name="state">code</field>
+        <field name="code">model.activity_cron_for_coordinator()</field>
+        <field name='interval_number'>1</field>
+        <field name='interval_type'>days</field>
+        <field name="numbercall">-1</field>
+    </record>
+</odoo>

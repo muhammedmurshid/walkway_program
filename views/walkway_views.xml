@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="model_walkway_program_form_view" model="ir.ui.view">
+        <field name="name">walkway.Form.view</field>
+        <field name="model">walkway.program</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="One to One Meeting">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="action_submit" type="object" string="Submit" class="oe_highlight" states="draft"
+                            groups="logic_base.coordinator_logic_base"/>
+                    <button name="action_cancel" type="object" string="Cancel" states="draft"
+                            groups="logic_base.coordinator_logic_base"/>
+
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Completed" bg_color="bg-success"
+                            attrs="{'invisible': [('state', '!=', 'done')]}"/>
+                    <div class="oe_title pr-0">
+                        <h1 class="d-flex flex-row justify-content-between">
+                            <field name="batch_id" class="o_task_name text-truncate" placeholder="Batch..."
+                                   default_focus="1" required="1" options="{'no_create': True}"/>
+
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <!--                            <field name="name"/>-->
+                            <field name="class_teacher_id"/>
+                            <field name="program_coordinator_id" invisible="1"/>
+
+                            <!--                            <field name="batch_id" options="{'no_create': True}" required="1"/>-->
+                            <field name="scheduled_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Students List" name="student_list">
+                            <field name="walk_ids" widget="one2many" >
+                                <tree string="Students List" editable="bottom">
+                                    <field name="sequence" readonly="1" style="width:5px;"/>
+                                    <field name="student_id"/>
+                                    <field name="program"/>
+
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="attended_students">
+                                <field name="attended_students" invisible="1"/>
+                                <field name="batch_strength"/>
+                                <field name="attend_out_of_strength"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="model_walkway_program_list_view" model="ir.ui.view">
+        <field name="name">walkway.program.list.view</field>
+        <field name="model">walkway.program</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="scheduled_date"/>
+                <field name="class_teacher_id"/>
+                <field name="batch_id"/>
+                <field name="attend_out_of_strength" widget="badge"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'"
+                       decoration-info="state == 'draft'" decoration-danger="state == 'cancelled'"/>
+
+            </tree>
+
+        </field>
+    </record>
+
+    <template id="assets_backend" name="walkway_program_assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/walkway_program/static/src/js/sequence.js"></script>
+            <link rel="stylesheet" href="/walkway_program/static/src/css/size.css"/>
+        </xpath>
+    </template>
+
+    <!--    <record id="seq_walkway_program" model="ir.sequence">-->
+    <!--       <field name="name">Walk Sequence</field>-->
+    <!--       <field name="code">walkway.students.list</field>-->
+    <!--       <field name="prefix"> </field>-->
+    <!--       <field name="padding">0</field>-->
+    <!--       <field name="company_id" eval="False"/>-->
+    <!--   </record>-->
+
+    <record model="ir.actions.act_window" id="model_walkway_program_action">
+        <field name="name">Walkway Program</field>
+        <field name="res_model">walkway.program</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem name="Walkway Program"
+              id="walkway_program_main_menu"
+              web_icon="walkway_program/static/description/icon.png"
+              sequence="10"/>
+
+    <menuitem name="Walkway Program" id="walkway_program_menu"
+              action="model_walkway_program_action"
+              parent="walkway_program_main_menu"
+              sequence="1"/>
+
+
+</odoo>

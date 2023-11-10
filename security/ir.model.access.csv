@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_walk_way_public_access_program_coordinator,access_details,model_walkway_program,logic_base.program_coordinator_logic_base,1,1,1,1
+access_walk_way_students_list_public_access,access_details,model_walkway_students_list,,1,1,1,1
+
+access_walk_way_public_access_coordinator,access_details,model_walkway_program,logic_base.coordinator_logic_base,1,1,0,1
+
+access_walk_way_public_access_academic_head,access_details,model_walkway_program,logic_base.academic_head_logic_base,1,1,0,1
+
+access_walk_way_public_access_hr,access_details,model_walkway_program,logic_base.hr_manager_logic_base,1,1,0,1
+
+
+

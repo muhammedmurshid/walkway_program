@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="0">
+        <record model="ir.rule" id="logic_walkway_rules_for_coordinator">
+            <field name="name">Coordinator rules walkway program</field>
+            <field name="model_id" ref="model_walkway_program"/>
+            <field name="domain_force">[('class_teacher_id.id','=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('logic_base.coordinator_logic_base'))]"/>
+        </record>
+
+        <record model="ir.rule" id="logic_walkway_rules_for_program_coordinators">
+            <field name="name">Program Coordinator rules walkway program</field>
+            <field name="model_id" ref="model_walkway_program"/>
+            <field name="domain_force">['|',('program_coordinator_id.id', '=', user.id), ('create_uid','=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('logic_base.program_coordinator_logic_base'))]"/>
+        </record>
+
+        <record model="ir.rule" id="logic_walkway_rules_for_academic_head">
+            <field name="name">Academic Head rules walkway program</field>
+            <field name="model_id" ref="model_walkway_program"/>
+            <field name="domain_force">[('class_teacher_id.employee_id.user_id.id','=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('logic_base.academic_head_logic_base'))]"/>
+        </record>
+    </data>
+</odoo>
