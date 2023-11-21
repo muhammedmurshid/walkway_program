@@ -9,6 +9,7 @@ class WalkwayProgramForm(models.Model):
 
     class_teacher_id = fields.Many2one('res.users', string='Class Teacher', required=True)
     scheduled_date = fields.Date(string='Scheduled Date', required=True)
+    branch = fields.Many2one('logic.base.branches', related='batch_id.branch_id', string='Branch')
     state = fields.Selection([
         ('draft', 'Draft'), ('done', 'Done'), ('cancelled', 'Cancelled')], default='draft', tracking=True)
     walk_ids = fields.One2many('walkway.students.list', 'walk_id', string="Walkway", default=False)
@@ -30,26 +31,33 @@ class WalkwayProgramForm(models.Model):
     @api.depends('walk_ids.student_id', 'batch_id')
     def onchange_walk_ids(self):
         for rec in self:
-            rec.attended_students = len(rec.walk_ids)
-            rec.attend_out_of_strength = str(rec.attended_students) + '/' + str(rec.batch_strength)
+            if rec.walk_ids:
+                rec.attended_students = len(rec.walk_ids)
+                rec.attend_out_of_strength = str(rec.attended_students) + '/' + str(rec.batch_strength)
+            else:
+                rec.attended_students = 0
+                rec.attend_out_of_strength = 0
 
-    @api.depends('batch_id')
     def _compute_display_name(self):
         for rec in self:
-            rec.display_name = 'Walkway Program ' + str(rec.batch_id.name)
+            if rec.batch_id:
+                rec.display_name = 'Walkway Program ' + str(rec.batch_id.name)
+            else:
+                rec.display_name = 'Walkway Program'
 
     @api.onchange('class_teacher_id')
     def onchange_class_teacher(self):
         self.batch_id = False
-        batch = self.env['logic.base.batch'].sudo().search([('academic_coordinator', '=', self.class_teacher_id.id)])
-        batches = []
-        batches.clear()
-        for i in batch:
-            print(i.name, 'batch')
-            batches.append(i.id)
-        domain = [('id', 'in', batches)]
-            # id.append(i.name, 'batch')
-        return {'domain': {'batch_id': domain}}
+        if self.class_teacher_id:
+            batch = self.env['logic.base.batch'].sudo().search([('academic_coordinator', '=', self.class_teacher_id.id)])
+            batches = []
+            batches.clear()
+            for i in batch:
+                print(i.name, 'batch')
+                batches.append(i.id)
+            domain = [('id', 'in', batches)]
+                # id.append(i.name, 'batch')
+            return {'domain': {'batch_id': domain}}
 
     batch_id = fields.Many2one('logic.base.batch', string='Batch', domain=onchange_class_teacher)
 
@@ -115,7 +123,6 @@ class WalkwayProgramForm(models.Model):
         for index, child in enumerate(self.walk_ids, start=1):
             child.write({'sequence': index})
         return result
-
 
 
 class WalkwayStudentsList(models.Model):
