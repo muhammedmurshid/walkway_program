@@ -61,18 +61,18 @@ class WalkwayProgramForm(models.Model):
 
     batch_id = fields.Many2one('logic.base.batch', string='Batch', domain=onchange_class_teacher)
 
-    @api.onchange('batch_id')
-    def onchange_batch_students(self):
-        unlink_commands = [(3, child.id) for child in self.walk_ids]
-        self.write({'walk_ids': unlink_commands})
-        students = self.env['logic.students'].search([('batch_id', '=', self.batch_id.id)])
-
-        for i in students:
-            if self.batch_id:
-                print(i.name, 'std')
-                self.walk_ids = [(0, 0, {'student_id': i.id})]
-            else:
-                self.walk_ids = []
+    # @api.onchange('batch_id')
+    # def onchange_batch_students(self):
+    #     unlink_commands = [(3, child.id) for child in self.walk_ids]
+    #     self.write({'walk_ids': unlink_commands})
+    #     students = self.env['logic.students'].search([('batch_id', '=', self.batch_id.id)])
+    #
+    #     for i in students:
+    #         if self.batch_id:
+    #             print(i.name, 'std')
+    #             self.walk_ids = [(0, 0, {'student_id': i.id})]
+    #         else:
+    #             self.walk_ids = []
 
     def activity_cron_for_coordinator(self):
         current_date = datetime.now().date()
