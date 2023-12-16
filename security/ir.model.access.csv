@@ -9,5 +9,4 @@ access_walk_way_public_access_academic_head,access_details,model_walkway_program
 
 access_walk_way_public_access_hr,access_details,model_walkway_program,logic_base.hr_manager_logic_base,1,1,0,1
 
-
-
+access_walk_way_super_coordinator,access_details,model_walkway_program,logic_base.logic_base_super_coordinator,1,1,1,1

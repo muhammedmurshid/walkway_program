@@ -49,14 +49,16 @@ class WalkwayProgramForm(models.Model):
     def onchange_class_teacher(self):
         self.batch_id = False
         if self.class_teacher_id:
-            batch = self.env['logic.base.batch'].sudo().search([('academic_coordinator', '=', self.class_teacher_id.id)])
+            batch = self.env['logic.base.batch'].sudo().search([])
             batches = []
             batches.clear()
             for i in batch:
                 print(i.name, 'batch')
                 batches.append(i.id)
             domain = [('id', 'in', batches)]
-                # id.append(i.name, 'batch')
+            print(domain, 'domain')
+            print(batches, 'batches')
+
             return {'domain': {'batch_id': domain}}
 
     batch_id = fields.Many2one('logic.base.batch', string='Batch', domain=onchange_class_teacher)
@@ -88,6 +90,7 @@ class WalkwayProgramForm(models.Model):
                     print(i.scheduled_date)
             else:
                 print('na')
+
     def action_cancel(self):
         activity_id = self.env['mail.activity'].search(
             [('res_id', '=', self.id), ('user_id', '=', self.env.user.id), (
