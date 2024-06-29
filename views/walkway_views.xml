@@ -30,6 +30,7 @@
                             <!--                            <field name="name"/>-->
                             <field name="class_teacher_id" options="{'no_create': True}"/>
                             <field name="batch_id" required="1" options="{'no_create': True}"/>
+                            <field name="batch_ids" widget="many2many_tags" placeholder="if you want multiple batches"/>
                             <field name="branch"/>
                             <field name="program_coordinator_id" invisible="1"/>
 

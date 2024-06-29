@@ -16,18 +16,26 @@ class WalkwayProgramForm(models.Model):
     batch_strength = fields.Integer(string='Batch Strength', compute='_compute_batch_strength', store=True)
     attended_students = fields.Integer(string='Attended Students', compute="onchange_walk_ids")
     attend_out_of_strength = fields.Char(string='Attended Students', compute="onchange_walk_ids")
-    program_coordinator_id = fields.Many2one('res.users', string='Program Coordinator', default=lambda self: self.env.user)
+    batch_ids = fields.Many2many('logic.base.batch', string='Batches', help="if you want to add multiple batch", )
+    program_coordinator_id = fields.Many2one('res.users', string='Program Coordinator',
+                                             default=lambda self: self.env.user)
 
-    @api.depends('batch_id')
+    @api.depends('batch_id','batch_ids')
     def _compute_batch_strength(self):
-        for rec in self:
+        strength = self.env['logic.students'].sudo().search([])
+        count = 0
+        for rec in strength:
+            if self.batch_ids:
+                if rec.batch_id.id in self.batch_ids.ids:
+                    count += 1
+            if self.batch_id:
+                if rec.batch_id.id == self.batch_id.id:
+                    count += 1
+                    print(strength, 'strength')
 
-            if rec.batch_id:
-                strength = self.env['logic.students'].sudo().search_count([('batch_id', '=', rec.batch_id.id)])
-                print(strength, 'strength')
-                rec.batch_strength = strength
-            # rec.attend_out_of_strength = str(rec.attended_students) + '/' + str(rec.batch_strength)
-
+        self.batch_strength = count
+                                          # rec.attend_out_of_strength = str(rec.attended_students) + '/' + str(rec.batch_strength
+                #
     @api.depends('walk_ids.student_id', 'batch_id')
     def onchange_walk_ids(self):
         for rec in self:
@@ -136,5 +144,3 @@ class WalkwayStudentsList(models.Model):
     program = fields.Char(string='Program')
     walk_id = fields.Many2one('walkway.program', string='Walkway', ondelete='cascade')
     sequence = fields.Integer(string="SI Number", default=1)
-
-
